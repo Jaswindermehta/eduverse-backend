@@ -1,0 +1,31 @@
+# Checklist: Eduverse Backend System - Phase 4 (Docker, Redis Caching, Rate Limiting, Observability & CI/CD)
+
+- [x] **Phase 1: Authentication & Authorization** (Completed)
+- [x] **Phase 2: Course & Content Management** (Completed)
+- [x] **Phase 3: Storage, Async & Event Notification Architecture** (Completed)
+
+- [/] **Phase 4: Production Deployment & Systems Engineering Core** (In Progress)
+  - [x] **Step 1: Maven Dependencies & Core Properties Setup** (Completed)
+    - [x] Update `pom.xml` with `spring-boot-starter-data-redis`, `spring-boot-starter-actuator`, and `bucket4j-core`
+    - [x] Configure `application.properties` to set `spring.profiles.active=dev` by default
+    - [x] Create `application-dev.properties` containing dev settings (local DB, local Redis, S3 fallback)
+    - [x] Create `application-prod.properties` containing production performance settings (Hikari pooling, external variables)
+  - [x] **Step 2: Observability & Security Configuration** (Completed)
+    - [x] Configure Spring Boot Actuator web exposure path rules
+    - [x] Modify `SecurityConfig.java` to permit unrestricted access to `/actuator/**` health stats
+  - [x] **Step 3: Custom API Rate Limiting Filter** (Completed)
+    - [x] Create `RateLimitingFilter.java` using Bucket4j core and dynamic thread-safe token buckets
+    - [x] Register `RateLimitingFilter` inside `SecurityConfig.java` before main authentication guards
+  - [x] **Step 4: Redis Caching Layer** (Completed)
+    - [x] Create `CacheConfig.java` with Generic/Jackson JSON value serializers and custom expirations (TTLs)
+    - [x] Modify `CategoryService.java` to cache lists and evict on mutations
+    - [x] Modify `CourseService.java` to cache lists and details by ID and evict on mutations
+  - [x] **Step 5: Docker Containerization Suite** (Completed)
+    - [x] Create multi-stage `Dockerfile` using Temurin JDK 17 slim and minimal JRE Alpine distributions
+    - [x] Create multi-service `docker-compose.yml` defining `app`, `db` (PostgreSQL), and `redis` containers with persistent host mount volumes
+  - [x] **Step 6: CI/CD Automation Pipeline** (Completed)
+    - [x] Create automated pipeline `.github/workflows/backend-ci.yml` compiling, testing, and verifying docker builds
+  - [x] **Step 7: Verification & Optimization Review** (Completed)
+    - [x] Run automated compile checks and test executions
+    - [x] Verify Redis cache-hits, Actuator health statuses, and Bucket4j rate-limit blocks
+    - [x] Generate final system walkthrough guide
