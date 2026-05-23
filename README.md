@@ -291,24 +291,6 @@ curl -X GET "http://localhost:8080/api/courses?page=0&size=5&sortBy=title&direct
 
 ---
 
-## 🎨 Visual Assets & Screenshots
-
-*Below are structural layout references showing where to capture visual proof points for portfolio presentations:*
-
-#### 1. Interactive Swagger UI Documentation Dashboard
-![Swagger Playground Documentation Placeholder](https://raw.githubusercontent.com/antigravity-ai/placeholders/main/eduverse-swagger.png)
-*An illustration of the complete, self-documenting OpenAPI schemas and role-based test fields available at `/swagger-ui.html`.*
-
-#### 2. Clean Database Entity Relational Model (ERD) Schema
-![Database ERD Schema Layout](https://raw.githubusercontent.com/antigravity-ai/placeholders/main/eduverse-erd.png)
-*Detailed visual layout of relational foreign key connections mapping users, roles, categories, courses, enrollments, reviews, and logs in PostgreSQL.*
-
-#### 3. High-Throughput Thread Pool Observability Console Logs
-```text
-2026-05-22 15:30:15 [EduTask-Metrics-1] INFO  c.e.c.AsyncMetricsConfig - [ASYNC MONITOR] Pool Active Threads: 3, Queue Tasks: 12, Pool Size: 5, Max Size: 15
-2026-05-22 15:30:18 [EduTask-2] DEBUG c.e.s.AsyncEmailService - [MAIL DISPATCH] Sending rich HTML receipt to student@eduverse.com
-```
-
 ---
 
 ## 🧪 Testing Instructions
