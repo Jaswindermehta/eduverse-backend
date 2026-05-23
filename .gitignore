@@ -1,0 +1,50 @@
+# ============================================================================
+# EDUVERSE BACKEND GITIGNORE TEMPLATE
+# ============================================================================
+
+# Maven build outputs
+/target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Eclipse specific configurations
+.metadata
+.classpath
+.project
+.settings/
+*.launch
+
+# IntelliJ IDEA specific configurations
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# NetBeans specific configurations
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Operating System temporary and junk files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Application local file uploads fallback directory
+/uploads/
+
+# Telemetry logs and console logs
+*.log
+logs/
+temp/

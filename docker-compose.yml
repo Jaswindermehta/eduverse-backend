@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # POSTGRESQL DATABASE CONTAINER (eduverse-db)
+  # ============================================================================
+  db:
+    image: postgres:15-alpine
+    container_name: eduverse-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=eduverse
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d eduverse"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # REDIS CACHE ENGINE CONTAINER (eduverse-redis)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: eduverse-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # SPRING BOOT BACKEND CONTAINER (eduverse-app)
+  # ============================================================================
+  app:
+    build: .
+    container_name: eduverse-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Target production profile configuration
+      - SPRING_PROFILES_ACTIVE=prod
+      # Point to Docker Compose database service endpoint
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/eduverse
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      # Point to Docker Compose redis service endpoint
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # Environment hooks for S3 and SMTP (Replace these in actual deployments)
+      - SMTP_USERNAME=noreply.eduverse@gmail.com
+      - SMTP_PASSWORD=YOUR_APP_PASSWORD
+      - AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY
+      - AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_KEY
+      - AWS_S3_BUCKET=eduverse-marketplace-bucket
+      - AWS_S3_REGION=us-east-1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - upload_data:/app/uploads
+
+# ============================================================================
+# PERSISTENT STORAGE DATA VOLUMES
+# ============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  upload_data:
+    driver: local

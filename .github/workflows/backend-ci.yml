@@ -1,0 +1,65 @@
+# ============================================================================
+# GITHUB ACTIONS AUTOMATED CI PIPELINE (backend-ci.yml)
+# ============================================================================
+name: Eduverse Backend Continuous Integration
+
+on:
+  # Trigger the pipeline on any push or pull request to the main branches
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      # Provision a Redis service inside the runner container environment for integration tests (if any)
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # 1. Check out the repository source code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Setup Java 17 (Temurin distribution)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. Cache local Maven dependencies to optimize execution speed
+      - name: Cache Maven Packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # 4. Compile and execute all JUnit and Mockito test suites
+      - name: Run Clean Compile and Test Suites
+        run: mvn clean test
+        env:
+          # Inject dummy variables for successful test context initialization
+          SPRING_PROFILES_ACTIVE: dev
+          SPRING_DATA_REDIS_HOST: localhost
+          SPRING_DATA_REDIS_PORT: 6379
+
+      # 5. Build the production-ready executable JRE package JAR
+      - name: Package JAR Binary
+        run: mvn package -DskipTests
+
+      # 6. Validate the Dockerfile build process to guarantee container integrity
+      - name: Validate Docker Container Build
+        run: docker build -t eduverse-backend:latest .
